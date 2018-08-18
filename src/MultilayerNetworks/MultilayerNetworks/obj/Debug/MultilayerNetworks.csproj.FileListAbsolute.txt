@@ -1,0 +1,9 @@
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\bin\Debug\MultilayerNetworks.exe.config
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\bin\Debug\MultilayerNetworks.exe
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\bin\Debug\MultilayerNetworks.pdb
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\bin\Debug\MathNet.Numerics.dll
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\bin\Debug\MathNet.Numerics.xml
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\obj\Debug\MultilayerNetworks.csprojResolveAssemblyReference.cache
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\obj\Debug\MultilayerNetworks.csproj.CoreCompileInputs.cache
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\obj\Debug\MultilayerNetworks.exe
+C:\Users\Honza\Desktop\FINAL\src\MultilayerNetworks\MultilayerNetworks\obj\Debug\MultilayerNetworks.pdb

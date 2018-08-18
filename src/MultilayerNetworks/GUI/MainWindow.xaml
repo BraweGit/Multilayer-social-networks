@@ -1,0 +1,349 @@
+﻿<Window x:Class="GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        xmlns:local="clr-namespace:GUI"
+        mc:Ignorable="d"
+        Title="Multilayer Networks" Height="720" MaxHeight="720" MinHeight="720" Width="920" MaxWidth="920" MinWidth="920">
+    <Window.DataContext>
+        <local:MultilayerNetworkViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontFamily" Value="Calibri" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="25,1,5,5"/>
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontWeight="Bold" FontFamily="Calibri" FontSize="13"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="btnStyle_1" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true" CornerRadius="5" Width="70" Height="35" MinWidth="70" MinHeight="25" Cursor="Hand">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Name="mainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="650" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition MaxHeight="25" />
+            <RowDefinition MaxHeight="155" />
+            <RowDefinition Height="285" MaxHeight="285" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TabControl Name="tabControl" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Grid.RowSpan="2">
+            <TabItem Header="Actors">
+                <ListView Margin="10" Name="ListViewActors" ItemsSource="{Binding Actors}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Degree" Width="60" DisplayMemberBinding="{Binding Degree}" />
+                            <GridViewColumn Header="Degree deviation" Width="110" DisplayMemberBinding="{Binding DegreeDeviation, StringFormat=N5}" />
+                            <!--<GridViewColumn Header="Connective redundancy" Width="150" DisplayMemberBinding="{Binding ConnectiveRedundancy, StringFormat=N5}" />-->
+                            <GridViewColumn Header="Closeness" Width="70" DisplayMemberBinding="{Binding Closeness, StringFormat=N5}" />
+                            <GridViewColumn Header="CC" Width="60" DisplayMemberBinding="{Binding ClusteringCoefficient, StringFormat=N5}" />
+                            <GridViewColumn Header="Neighborhood" Width="90" DisplayMemberBinding="{Binding NeighborhoodCentrality}" />
+                            <!--<GridViewColumn Header="Relevance" Width="100" DisplayMemberBinding="{Binding Relevance, StringFormat=N5}" />-->
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Nodes">
+                <ListView Margin="10" Name="ListViewNodes" ItemsSource="{Binding Nodes}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Degree" Width="100" DisplayMemberBinding="{Binding Degree}" />
+                            <GridViewColumn Header="Closeness" Width="100" DisplayMemberBinding="{Binding ClosenessCentrality, StringFormat=N5}" />
+                            <GridViewColumn Header="CC" Width="100" DisplayMemberBinding="{Binding ClusteringCoefficient, StringFormat=N5}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Layers">
+                <ListView Margin="10" Name="ListViewLayers" ItemsSource="{Binding Layers}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="n" Width="50" DisplayMemberBinding="{Binding NodesCount}" />
+                            <GridViewColumn Header="Density" Width="100" DisplayMemberBinding="{Binding Density, StringFormat=N5}" />
+                            <GridViewColumn Header="CC" Width="200" DisplayMemberBinding="{Binding AverageClusteringCoefficient, StringFormat=N5}" />
+                            <GridViewColumn Header="Avg degree centrality" Width="200" DisplayMemberBinding="{Binding AverageDegreeCentrality, StringFormat=N5}" />
+                            
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Selected layer">
+                <ListView Margin="10" Name="ListViewSelectedLayer" ItemsSource="{Binding SelectedActors}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Degree" Width="100" DisplayMemberBinding="{Binding SelectedDegree}" />
+                            <GridViewColumn Header="Connective redundancy" Width="150" DisplayMemberBinding="{Binding SelectedConnectiveRedundancy, StringFormat=N5}" />
+                            <!--<GridViewColumn Header="Closeness" Width="100" DisplayMemberBinding="{Binding Closeness, StringFormat=N5}" /> -->
+                            <GridViewColumn Header="CC" Width="100" DisplayMemberBinding="{Binding SelectedClusteringCoefficient, StringFormat=N5}" />
+                            <!--<GridViewColumn Header="Neighborhood" Width="100" DisplayMemberBinding="{Binding SelectedNeighborhoodCentrality}" />-->
+                            <GridViewColumn Header="Relevance" Width="100" DisplayMemberBinding="{Binding SelectedRelevance, StringFormat=N5}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Plot">
+                <oxy:PlotView Model="{Binding MainPlotModel}">
+                </oxy:PlotView>
+            </TabItem>
+        </TabControl>
+
+        <GroupBox Grid.Column="1" Grid.Row="1" Header="Network" HorizontalAlignment="Stretch" Height="Auto" Margin="10,10,10,10" VerticalAlignment="Top" Width="Auto">
+            <Grid Name="networkDescriptionGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" Grid.Row="0">Network name:</Label>
+                <Label Grid.Column="0" Grid.Row="1">Number of actors:</Label>
+                <Label Grid.Column="0" Grid.Row="2">Number of nodes:</Label>
+                <Label Grid.Column="0" Grid.Row="3">Number of edges:</Label>
+                <Label Grid.Column="0" Grid.Row="4">Number of layers:</Label>
+                <Label Grid.Column="1" Grid.Row="0" Content="{Binding NetworkName, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="1" Grid.Row="2" Content="{Binding NodesCount, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="1" Grid.Row="3" Content="{Binding EdgesCount, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="1" Grid.Row="4" Content="{Binding LayersCount, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="1" Grid.Row="1" Content="{Binding ActorsCount, UpdateSourceTrigger=PropertyChanged}"/>
+
+            </Grid>
+
+        </GroupBox>
+
+        <!--<GroupBox Grid.Column="1" Grid.Row="2" Header="Distribution charts" HorizontalAlignment="Stretch" Height="Auto" Margin="10,10,10,10" VerticalAlignment="Top" Width="Auto">
+            <Grid Name="flattenedGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <CheckBox Grid.Column="0" Grid.Row="2" Name="logXChck" HorizontalAlignment="Center" Margin="0,10,0,10"/>
+                <Label Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center">Log scale (x)</Label>
+                <CheckBox Grid.Column="1" Grid.Row="2" Name="logYChck" HorizontalAlignment="Center" Margin="0,10,0,10"/>
+                <Label Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center">Log scale (y)</Label>
+
+                <Label Grid.Column="0" Grid.Row="3" HorizontalAlignment="Center" Margin="0,10,0,10">Distribution</Label>
+                <Button Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="4" Name="plotBtn_" Margin="0,10,0,10" HorizontalAlignment="Center" Style="{DynamicResource btnStyle_1}">Plot</Button>
+
+
+                --><!--<Label Grid.Column="0" Grid.Row="1">Network density:</Label>
+                <Label Grid.Column="1" Grid.Row="1" Content="{Binding FlattenedDensity, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.#####}"/>
+
+                <Label Grid.Column="0" Grid.Row="2">Min degree:</Label>
+                <Label Grid.Column="1" Grid.Row="2" Content="{Binding MinDegree, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Column="0" Grid.Row="3">Max degree:</Label>
+                <Label Grid.Column="1" Grid.Row="3" Content="{Binding MaxDegree, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Column="0" Grid.Row="4">Average degree:</Label>
+                <Label Grid.Column="1" Grid.Row="4" Content="{Binding AverageDegree, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.#####}"/>
+
+                <Label Grid.Column="0" Grid.Row="5">Average cc:</Label>
+                <Label Grid.Column="1" Grid.Row="5" Content="{Binding AverageClusteringCoefficient, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.#####}"/>
+
+                <Label Grid.Column="0" Grid.Row="6">Average:</Label>
+                <Label Grid.Column="1" Grid.Row="6" Content="{Binding Average, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.#####}"/>
+
+                <Label Grid.Column="0" Grid.Row="7">Average distance:</Label>
+                <Label Grid.Column="1" Grid.Row="7" Content="{Binding AverageDistance, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.#####}"/>
+
+                <Label Grid.Column="0" Grid.Row="8">Connected components:</Label>
+                <Label Grid.Column="1" Grid.Row="8" Content="{Binding ConnectedComponentsCount, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Column="0" Grid.Row="9">Largest connected component:</Label>
+                <Label Grid.Column="1" Grid.Row="9" Content="{Binding LargestConnectedComponent, UpdateSourceTrigger=PropertyChanged}"/>--><!--
+
+            </Grid>
+
+        </GroupBox>-->
+
+        <GroupBox Grid.Column="0" Grid.Row="1" Header="Layer" HorizontalAlignment="Stretch" Height="Auto" Margin="10,10,10,10" VerticalAlignment="Top" Width="Auto">
+            <Grid Name="selectedLayerGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Margin="5,0,5,0" Grid.Column="3" Grid.Row="3">Layer density:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="4" Grid.Row="3" Content="{Binding SelectedDensity, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.####}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="1" Grid.Row="1">Min degree:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="2" Grid.Row="1" Content="{Binding SelectedMinDegree, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="1" Grid.Row="2">Max degree:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="2" Grid.Row="2" Content="{Binding SelectedMaxDegree, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="1" Grid.Row="3">Average degree:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="2" Grid.Row="3" Content="{Binding SelectedAverageDegree, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.####}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="5" Grid.Row="2">Average cc:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="6" Grid.Row="2" Content="{Binding SelectedAverageClusteringCoefficient, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.####}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="3" Grid.Row="1">Average:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="4" Grid.Row="1" Content="{Binding SelectedAverage, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.####}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="3" Grid.Row="2">Average distance:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="4" Grid.Row="2" Content="{Binding SelectedAverageDistance, UpdateSourceTrigger=PropertyChanged}" ContentStringFormat="{}{0:0.####}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="5" Grid.Row="3">Connected components:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="6" Grid.Row="3" Content="{Binding SelectedConnectedComponentsCount, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Margin="5,0,5,0" Grid.Column="5" Grid.Row="1">Largest connected component:</Label>
+                <Label Margin="5,0,5,0" Grid.Column="6" Grid.Row="1" Content="{Binding SelectedLargestConnectedComponent, UpdateSourceTrigger=PropertyChanged}"/>
+
+            </Grid>
+
+        </GroupBox>
+
+        <!--<StackPanel Grid.Column="1" Grid.Row="3">
+            <Button Name="importBtn" Margin="10,10,10,10" Style="{DynamicResource btnStyle_1}">Import</Button>
+            <Button Name="toCsvBtn_" Margin="10,10,10,10" Style="{DynamicResource btnStyle_1}">Export</Button>
+        </StackPanel>-->
+
+
+        <DockPanel Grid.ColumnSpan="2">
+            <ToolBarTray DockPanel.Dock="Top" Background="Transparent">
+                <ToolBar Background="Transparent">
+                    <Menu Background="Transparent">
+                        <MenuItem Header="File">
+                            <MenuItem x:Name="fileOpenBtn" Header="Open"/>
+                            <MenuItem x:Name="toCsvBtn" Header="To CSV"/>
+                        </MenuItem>
+                    </Menu>
+                    <Separator />
+                    <Menu Background="Transparent">
+                        <MenuItem Header="Plots">
+                            <MenuItem x:Name="plotBtn" Header="Plot"/>
+                            <MenuItem x:Name="cumulativeToggle" IsCheckable="True" IsChecked="True" Header="Cumulative complementary"/>
+                            <MenuItem x:Name="logXToggle" IsCheckable="True" IsChecked="False" Header="Log Axis X"/>
+                            <MenuItem x:Name="logYToggle" IsCheckable="True" IsChecked="False" Header="Log Axis Y"/>
+                            <MenuItem Header="Export">
+                                <MenuItem x:Name="exportPdf" Header="PDF"/>
+                                <MenuItem x:Name="exportPng" Header="PNG"/>
+                            </MenuItem>
+                        </MenuItem>
+                    </Menu>
+                    <Separator />
+                    <Label>Distribution:</Label>
+                    <ComboBox Name="plotIndex" HorizontalAlignment="Center" Width="130" Margin="5,0,0,1" SelectedIndex="0" ItemsSource="{Binding DistributionsComboBox}"/>
+                    <Separator />
+                    <Label>Layer:</Label>
+                    <ComboBox Name="layersGrp" MinWidth="100" ItemsSource="{Binding Layers}" DisplayMemberPath="Name" SelectedValuePath="Id" SelectedIndex="0" Margin="5,0,0,1"/>
+                    <Menu Background="Transparent">
+                        <MenuItem x:Name="layerComparisonBtn" Header="Layer Comparison"/>
+                    </Menu>
+                    <Menu Background="Transparent">
+                        <MenuItem Header="Export summary">
+                            <MenuItem x:Name="summaryBtn" Header="CSV"/>
+                            <MenuItem x:Name="summaryBtnTxt" Header="TXT"/>
+                        </MenuItem>
+                    </Menu>
+
+                </ToolBar>
+            </ToolBarTray>
+        </DockPanel>
+    </Grid>
+</Window>

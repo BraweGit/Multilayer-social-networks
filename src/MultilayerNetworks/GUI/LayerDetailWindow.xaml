@@ -1,0 +1,130 @@
+﻿<Window x:Class="GUI.LayerDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GUI"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        
+        Title="LayerDetailWindow" MaxHeight="640" Height="640" MaxWidth="800" Width="800">
+    <Grid Name="mainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <GroupBox Margin="10,10,11,10" Header="Layers" Grid.Row="1" Grid.Column="0">
+
+            <ListView Name="listViewLayers" ItemsSource="{Binding Layers}">
+                <ListView.View>
+                    <GridView ColumnHeaderToolTip="Layers">
+
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Header="Layer Name" Width="225"/>
+
+                        <GridViewColumn Header="Plot" Width="50" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox  Margin="10,0,0,0" x:Name="plotLayerChck" Checked="plotLayerChck_Checked" Unchecked="plotLayerChck_Unchecked"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                    </GridView>
+
+                </ListView.View>
+            </ListView>
+        </GroupBox>
+
+        <GroupBox Header="Chart" Margin="10,11,10,10" Grid.Row="2" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+            <oxy:PlotView Name="layerDetailPlot" Model="{Binding LayerPlotModel}">
+            </oxy:PlotView>
+
+        </GroupBox>
+
+        
+        <!--<TabControl Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1">
+            <TabItem Header="Plot">
+                
+            </TabItem>
+        </TabControl>-->
+
+        
+
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+        </Grid>
+
+        <DockPanel>
+            <ToolBarTray DockPanel.Dock="Top" Background="Transparent">
+                <ToolBar Background="Transparent">
+                    <Menu Background="Transparent">
+                        <MenuItem Header="Plots">
+                            <MenuItem x:Name="plotBtn" Header="Plot"/>
+                            <MenuItem x:Name="cumulativeToggle" IsCheckable="True" IsChecked="True" Header="Cumulative complementary"/>
+                            <MenuItem x:Name="logXToggle" IsCheckable="True" IsChecked="False" Header="Log Axis X"/>
+                            <MenuItem x:Name="logYToggle" IsCheckable="True" IsChecked="False" Header="Log Axis Y"/>
+                            <MenuItem Header="Legend Position">
+                                
+                                <MenuItem x:Name="legendLeftTop" Header="Left Top">
+                                    <MenuItem.Icon>
+                                        <RadioButton GroupName="LegendPositionGroup" IsChecked="{Binding Path=ModeArray[0], Mode=TwoWay}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem x:Name="legendRightTop" Header="Right Top">
+                                    <MenuItem.Icon>
+                                        <RadioButton GroupName="LegendPositionGroup" IsChecked="{Binding Path=ModeArray[1], Mode=TwoWay}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem x:Name="legendLeftBottom" Header="Left Bottom">
+                                    <MenuItem.Icon>
+                                        <RadioButton GroupName="LegendPositionGroup" IsChecked="{Binding Path=ModeArray[2], Mode=TwoWay}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem x:Name="legendRightBottom" Header="Right Bottom">
+                                    <MenuItem.Icon>
+                                        <RadioButton GroupName="LegendPositionGroup" IsChecked="{Binding Path=ModeArray[3], Mode=TwoWay}"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="Export">
+                                <MenuItem x:Name="exportPdf" Header="PDF"/>
+                                <MenuItem x:Name="exportPng" Header="PNG"/>
+                                <MenuItem x:Name="exportCsv" Header="CSV"/>
+                            </MenuItem>
+                        </MenuItem>
+                    </Menu>
+                    <Separator />
+                    <Label>Distribution:</Label>
+                    <ComboBox Name="plotIndex" HorizontalAlignment="Center" Width="130" Margin="5,0,0,1">
+                        <ComboBoxItem IsSelected="True">Degree</ComboBoxItem>
+                        <ComboBoxItem>Clustering coefficient</ComboBoxItem>
+                        <ComboBoxItem>Avg CC by Degree</ComboBoxItem>
+                        <ComboBoxItem>Relevance</ComboBoxItem>
+                        <ComboBoxItem>Exclusive neighborhood</ComboBoxItem>
+                        <ComboBoxItem>Exclusive relevance</ComboBoxItem>
+                    </ComboBox>
+                    <Menu Background="Transparent">
+                    </Menu>
+
+                </ToolBar>
+            </ToolBarTray>
+        </DockPanel>
+    </Grid>
+</Window>
